@@ -7,6 +7,7 @@ from airflow import DAG
 # Operators
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 
 # initializing the default arguments
 default_args = {
@@ -42,6 +43,18 @@ hello_world_task = PythonOperator(
     dag=hello_world_dag
     )
 
+k8s = KubernetesPodOperator(
+    namespace='airflow',
+    task_id="k8s",
+    #image='mathworks/matlab:r2022a',
+    image='bmoon0702/matlab-custom:r2022a',
+    cmds=["bash", "-cx"],
+    #arguments=["matlab", "-batch", "test"],
+    arguments=["pwd"],
+    name="matlab-test-pod",
+    dag=hello_world_dag
+)
+
 # Creating third task
 end_task = DummyOperator(
     task_id='end_task',
@@ -49,4 +62,4 @@ end_task = DummyOperator(
     )
 
 # Set the order of execution of tasks.
-start_task >> hello_world_task >> end_task
+start_task >> hello_world_task >> k8s >> end_task

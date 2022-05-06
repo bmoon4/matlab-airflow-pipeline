@@ -72,6 +72,16 @@ airflow-worker-0                       0/2     Init:0/1            0          10
 kubectl port-forward svc/airflow-webserver 8080:8080 --namespace airflow
 ```
 
+# check kubernetes installed
+
+```
+❯ k -n airflow exec -it airflow-worker-0 -- /bin/bash
+Defaulted container "worker" out of: worker, worker-log-groomer, wait-for-airflow-migrations (init)
+airflow@airflow-worker-0:/opt/airflow$ pip list | grep kubernetes
+apache-airflow-providers-cncf-kubernetes 3.0.2
+kubernetes                               11.0.0
+```
+
 # Login GUI
 url: `localhost:8080`
 username: `admin`
